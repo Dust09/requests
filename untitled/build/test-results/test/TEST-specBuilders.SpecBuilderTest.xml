@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="specBuilders.SpecBuilderTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-06-18T14:59:10" hostname="Lenovo-PC" time="5.18">
+  <properties/>
+  <testcase name="serelizationy" classname="specBuilders.SpecBuilderTest" time="5.18"/>
+  <system-out><![CDATA[{"status":"OK","place_id":"a001dc5c24a3e3f35f88ca9722a55885","scope":"APP","reference":"e57d33860d4c579f8c3652cc55ab1256e57d33860d4c579f8c3652cc55ab1256","id":"e57d33860d4c579f8c3652cc55ab1256"}
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
