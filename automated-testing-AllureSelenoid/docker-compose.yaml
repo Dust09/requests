@@ -1,0 +1,72 @@
+version: '3'
+    
+services:
+  selenoid:
+    image: aerokube/selenoid:latest-release
+    container_name: "selenoid"
+    network_mode: bridge
+    volumes:
+      - "./selenoid/conf:/etc/selenoid"
+      - "./selenoid/video:/opt/selenoid/video"
+      - "./selenoid/logs:/opt/selenoid/logs"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    environment:
+      - OVERRIDE_VIDEO_OUTPUT_DIR=work/selenoid/video
+    command: ["-conf", "/etc/selenoid/browsers.json", "-video-output-dir", "/opt/selenoid/video", "-log-output-dir", "/opt/selenoid/logs"]
+
+    ports:
+      - "4444:4444"
+  selenoid-ui:
+    image: aerokube/selenoid-ui:1.10.3
+    container_name: "selenoid-ui"
+    network_mode: bridge
+    depends_on:
+      - selenoid
+    ports:
+      - "8080:8080"
+    command: ["--selenoid-uri", "http://host.docker.internal:4444"]
+  allure:
+    image: "frankescobar/allure-docker-service"
+    container_name: "allure-docker"
+    environment:
+      CHECK_RESULTS_EVERY_SECONDS: NONE
+      KEEP_HISTORY: 1
+      KEEP_HISTORY_LATEST: 25
+    ports:
+      - "5050:5050"
+  allure-ui:
+    image: "frankescobar/allure-docker-service-ui"
+    container_name: "allure-docker-ui"
+    environment:
+      ALLURE_DOCKER_PUBLIC_API_URL: "http://localhost:5050"
+      ALLURE_DOCKER_PUBLIC_API_URL_PREFIX: ""
+    depends_on:
+      - allure
+    ports:
+      - "5252:5252"
+  
+  test-machine1:
+    build: .
+    network_mode: bridge
+    depends_on:
+      - selenoid
+    command: bash -c "
+            ./gradlew test --tests ru.cfmc.dev.quotas.tests.Form88_05* && 
+            ./sendResLin.py
+            && cat /dev/urandom | grep linuzzz "
+                       
+    
+  test-machine2:
+    build: .
+    network_mode: bridge
+    depends_on:
+      - selenoid
+    command: bash -c "
+            ./gradlew test --tests ru.cfmc.dev.quotas.tests.Form5_4* && 
+            ./sendResLin.py && cat /dev/urandom | grep linuzzz"            
+    
+  
+  
+
+
+
